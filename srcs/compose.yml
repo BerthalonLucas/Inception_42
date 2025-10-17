@@ -1,0 +1,7 @@
+services:
+  nginx:
+    build: ./requirements/nginx
+    ports:
+      - "1234:443"
+
+
