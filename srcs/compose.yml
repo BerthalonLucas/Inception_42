@@ -3,5 +3,23 @@ services:
     build: ./requirements/nginx
     ports:
       - "1234:443"
+    restart: unless-stopped
+  
+  wordpress:
+    build: ./requirements/wordpress
+    restart: unless-stopped
+    environment:
+      WORDPRESS_DB_HOST: maria-db:3306
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: root_password
+      WORDPRESS_DB_NAME: wordpress_db
+    depends_on:
+      - maria-db
 
-
+  maria-db:
+    build: ./requirements/mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wordpress_db
+      MARIADB_ROOT_PASSWORD: root_password

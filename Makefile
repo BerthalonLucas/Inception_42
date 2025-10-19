@@ -1,8 +1,11 @@
 
-all: run
+all: build
 
-run:
+build:
 	cd srcs && docker-compose up --build -d
+
+reload:
+	cd srcs && docker-compose down && docker-compose up --build -d
 
 stop:
 	cd srcs && docker-compose down
