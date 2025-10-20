@@ -1,0 +1,17 @@
+# Docker
+*.log
+.env
+docker-compose.override.yml
+
+# Specific file
+get_inf.sh
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
