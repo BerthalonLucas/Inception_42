@@ -1,25 +1,44 @@
 #!/bin/sh
 
-sleep 10
 
-cat > /var/www/html/wordpress/wp-config.php << EOF
-<?php
-define('DB_NAME', '${WORDPRESS_DB_NAME}');
-define('DB_USER', '${WORDPRESS_DB_USER}');
-define('DB_PASSWORD', '${WORDPRESS_DB_PASSWORD}');
-define('DB_HOST', '${WORDPRESS_DB_HOST}');
-define('DB_CHARSET', 'utf8');
-define('DB_COLLATE', '');
+echo "Waiting for Mariadb..."
+until mariadb -h maria-db -u ${WORDPRESS_DB_USER} -p${WORDPRESS_DB_PASSWORD} -e "SELECT 1" &>/dev/null; do
+    sleep 2
+done
+echo "Mariadb ready!"
 
-\$table_prefix = 'wp_';
+cd /var/www/html/wordpress
 
-define('WP_DEBUG', false);
+echo "testing install wp cli install"
 
-if ( ! defined( 'ABSPATH' ) ) {
-    define( 'ABSPATH', __DIR__ . '/' );
-}
+# if [wp --infos &>/dev/null]; then
+#     echo "wp cli installed"
+# else
+#     echo "wp cli not installed"
+#     exit 1
+# fi
 
-require_once ABSPATH . 'wp-settings.php';
-EOF
+wp config create \
+    --dbname=${WORDPRESS_DB_NAME} \
+    --dbuser=${WORDPRESS_DB_USER} \
+    --dbpass=${WORDPRESS_DB_PASSWORD} \
+    --dbhost=${WORDPRESS_DB_HOST} \
+    --allow-root
+
+wp core install \
+    --url=${WP_URL} \
+    --title="${WP_TITLE}" \
+    --admin_user=${WP_ADMIN_USER} \
+    --admin_password=${WP_ADMIN_PASSWORD} \
+    --admin_email=${WP_ADMIN_EMAIL} \
+    --skip-email \
+    --allow-root
+
+wp user create ${WP_USER} ${WP_USER_EMAIL} \
+    --role=author \
+    --user_pass=${WP_USER_PASSWORD} \
+    --allow-root
+
+echo "WordPress installation complete!"
 
 exec /usr/sbin/php-fpm* -F
