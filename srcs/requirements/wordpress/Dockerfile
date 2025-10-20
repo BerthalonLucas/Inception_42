@@ -5,11 +5,6 @@ RUN apk update && apk upgrade && \
             php-fileinfo php-mbstring php-openssl php-xml php-zip \
             wget curl mariadb-client php-phar
 
-RUN mkdir -p /var/www/html && wget https://wordpress.org/latest.tar.gz && \
-    tar -xzf latest.tar.gz && \
-    mv wordpress /var/www/html && \
-    rm latest.tar.gz
-
 COPY tools/setup.sh /setup.sh
 
 RUN chmod +x /setup.sh

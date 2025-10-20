@@ -6,6 +6,12 @@ docker-compose.override.yml
 # Specific file
 get_inf.sh
 
+# Secrets
+secrets/
+
+# testes
+tests/
+
 # OS
 .DS_Store
 Thumbs.db
