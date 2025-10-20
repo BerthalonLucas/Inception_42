@@ -4,15 +4,22 @@ services:
     ports:
       - "1234:443"
     restart: unless-stopped
+    volumes:
+      - wordpress_files:/var/www/html
+    depends_on:
+      - wordpress
   
   wordpress:
     build: ./requirements/wordpress
     restart: unless-stopped
     environment:
-      WORDPRESS_DB_HOST: maria-db:3306
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: root_password
-      WORDPRESS_DB_NAME: wordpress_db
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+    volumes:
+      - wordpress_files:/var/www/html
+      - db_data:/var/lib/mysql
     depends_on:
       - maria-db
 
@@ -20,6 +27,13 @@ services:
     build: ./requirements/mariadb
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: wordpress_db
-      MARIADB_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  wordpress_files:
+  db_data:
