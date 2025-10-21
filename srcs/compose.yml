@@ -5,7 +5,7 @@ services:
       - "443:443"
     restart: unless-stopped
     volumes:
-      - /home/lberthal/data/wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     depends_on:
       - wordpress
     networks:
@@ -25,7 +25,7 @@ services:
       WP_USER: ${WP_USER}
       WP_USER_EMAIL: ${WP_USER_EMAIL}
     volumes:
-      - /home/lberthal/data/wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     depends_on:
       - maria-db
     networks:
@@ -42,7 +42,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
     volumes:
-      - /home/lberthal/data/mariadb:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - inception
     secrets:
@@ -62,3 +62,18 @@ secrets:
     file: ../secrets/wp_admin_password.txt
   wp_user_password:
     file: ../secrets/wp_user_password.txt
+
+volumes:
+  wordpress_data:
+      driver: local
+      driver_opts:
+          type: none
+          device: /home/lberthal/data/wordpress
+          o: bind
+  mariadb_data:
+      driver: local
+      driver_opts:
+          type: none
+          device: /home/lberthal/data/mariadb
+          o: bind
+
